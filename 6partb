@@ -1,0 +1,38 @@
+import math
+import heapq
+
+graph = {
+"KTM": {"JA":0.90,"JB":0.80},
+"JA": {"KTM":0.90,"PH":0.95,"BS":0.70},
+"JB": {"KTM":0.80,"JA":0.60,"BS":0.90},
+"PH": {"JA":0.95,"BS":0.85},
+"BS": {"JA":0.70,"JB":0.90,"PH":0.85}
+}
+
+def safest_path(graph, source):
+
+    dist = {node: float('inf') for node in graph}
+    parent = {node: None for node in graph}
+
+    dist[source] = 0
+    pq = [(0, source)]
+
+    while pq:
+
+        current_dist, u = heapq.heappop(pq)
+
+        for v in graph[u]:
+
+            weight = -math.log(graph[u][v])
+
+            # Modified RELAX operation
+            if dist[v] > dist[u] + weight:
+                dist[v] = dist[u] + weight
+                parent[v] = u
+                heapq.heappush(pq,(dist[v],v))
+
+    return dist, parent
+
+dist, parent = safest_path(graph,"KTM")
+
+print(dist)
